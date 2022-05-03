@@ -12,6 +12,8 @@ mul = InvertibleFunction(op.mul, op.truediv)
 rmul = mul.flip.with_inverse(mul.inverse)
 div = InvertibleFunction(op.truediv, op.mul)
 rdiv = div.flip.with_inverse(div.flip)
+floordiv = Function(op.floordiv)
+rfloordiv = Function(op.floordiv).flip
 pow_ = Function(pow)
 rpow = pow_.flip
 mod = Function(op.mod)
@@ -44,7 +46,7 @@ getattr_ = Function(getattr)
 getitem = Function(op.getitem)
 
 
-def str_mul(text, n):
+def _str_mul(text, n):
     """Join or repeat text depending on context."""
     if isinstance(n, str):
         return n.join(text)
@@ -52,7 +54,21 @@ def str_mul(text, n):
         return text * n
 
 
-operations = {
+def _map_inverse(iterable, f):
+    return map(f.inverse, iterable)
+
+
+str_mul = InvertibleFunction(_str_mul, str.split)
+str_div = str_mul.inverse
+map_fn = Function(map).rotate.with_inverse(_map_inverse)
+
+mono_operations = {
+    '__pos__': identity,
+    '__neg__': neg,
+    '__invert__': invert,
+}
+
+bin_operations = {
     '__add__': add,
     '__radd__': radd,
     '__sub__': sub,
@@ -65,17 +81,15 @@ operations = {
     '__rpow__': rpow,
     '__mod__': mod,
     '__rmod__': rmod,
-    '__neg__': neg,
     '__lt__': lt,
     '__le__': le,
     '__gt__': gt,
     '__ge__': ge,
     '__eq__': eq,
-    '__neq__': ne,
+    '__ne__': ne,
     '__and__': and_,
     '__or__': or_,
     '__xor__': xor_,
-    '__invert__': invert,
     '__lshift__': lshift,
     '__rlshift__': rlshift,
     '__rshift__': rshift,
@@ -87,8 +101,10 @@ operation_symbols = {
     '': identity,
     '+': add,
     '-': sub,
+    '_': neg,
     '*': mul,
     '/': div,
+    '//': floordiv,
     '**': pow_,
     '<': lt,
     '<=': le,
@@ -99,6 +115,7 @@ operation_symbols = {
     '&': and_,
     '|': or_,
     '^': xor_,
+    '~': invert,
     '<<': lshift,
     '>>': rshift,
     '++': concat,
@@ -108,14 +125,15 @@ operation_symbols = {
     '[]': getitem,
     # Experimental
     ':=': getitem.right(-1).unpack,
+    's': Function(str.format).rotate,
     's+': concat,
-    's*': Function(str_mul),
-    's/': Function(str.split),
+    's*': str_mul,
+    's/': str_div,
     's//': Function(str.count),
     's%': Function(str.replace).right('', -1),
     # Bird Meertens-formalism (experimental)
     'f/': Function(functools.reduce).flip,
-    'f*': Function(map).rotate,
+    'f*': map_fn,
     'f<': Function(filter).flip,
     'f>': Function(filterfalse).flip,
 }

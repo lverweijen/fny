@@ -39,9 +39,23 @@ Pipe values through different functions:
 fac5 = (Pipe(5)
         .into_head('+', 1)
         .into_last(range, 1)
-        .into_head('f/', fn('*'), 1)  # fold is experimental
+        .into_head('f/', fn('*'), 1)
         .value)  # => 120
 ```
+
+Shortcuts (experimental):
+
+- `s/` and `s*` for `str.split` and `str.join`
+- `f/` and `f*` for `reduce` and `map`
+
+```python
+s = (Pipe('foe;bar;buz')
+     .into_head('s/', ';')
+     .into_head('f*', fn('.title') + '!')
+     .into_head('s*', ' ')
+     .value)  # => 'Foe! Bar! Buz!'
+```
+
 
 ### Related
 
