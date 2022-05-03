@@ -2,7 +2,7 @@ import operator
 from typing import Container
 
 from functional.functions import Function, PartialLeft, JuxtaPosition
-from functional.operators import operation_symbols, getitem
+from functional.operators import operation_symbols, getitem_fn
 
 
 def fn(f='', *args, **kwargs):
@@ -14,7 +14,7 @@ def fn(f='', *args, **kwargs):
         else:
             f = operation_symbols[f]
     elif isinstance(f, int):
-        f = getitem.right(f).unpack
+        f = getitem_fn.right(f).unpack
     elif isinstance(f, tuple):
         f = JuxtaPosition([fn(f_i) for f_i in f])
     elif isinstance(f, set):
