@@ -1,4 +1,4 @@
-from functional.formatting import repr_call
+from fny.formatting import repr_call
 
 
 class Function:

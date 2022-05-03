@@ -2,7 +2,7 @@ import functools
 import operator as op
 from itertools import filterfalse
 
-from functional.functions import Function, InvertibleFunction, IdentityFunction
+from fny.functions import Function, InvertibleFunction, IdentityFunction
 
 add_fn = InvertibleFunction(op.add, op.sub)
 radd_fn = add_fn.flip.with_inverse(add_fn.inverse)

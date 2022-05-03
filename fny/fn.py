@@ -1,8 +1,8 @@
 import operator
 from typing import Container
 
-from functional.functions import Function, PartialLeft, JuxtaPosition
-from functional.operators import operation_symbols, getitem_fn
+from fny.functions import Function, PartialLeft, JuxtaPosition
+from fny.operators import operation_symbols, getitem_fn
 
 
 def fn(f='', *args, **kwargs):

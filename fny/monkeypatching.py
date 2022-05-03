@@ -1,5 +1,5 @@
-from functional.functions import ComposedOperation, Function
-from functional.operators import bin_operations, mono_operations
+from fny.functions import ComposedOperation, Function
+from fny.operators import bin_operations, mono_operations
 
 
 def monkeypatch_ops(cls):

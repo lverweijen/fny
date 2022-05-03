@@ -1,4 +1,4 @@
-from functional import fn
+from fny import fn
 
 
 class Pipe:

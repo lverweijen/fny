@@ -3,7 +3,7 @@ Functional library for python
 ### Examples
 
 ```python
-from functional import fn, it, Pipe, OptionalPipe
+from fny import fn, it, Pipe, OptionalPipe
 ```
 
 Different ways to create functions:
