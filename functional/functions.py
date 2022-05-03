@@ -17,40 +17,55 @@ class Function:
         return repr_call(self.__class__, self._f)
 
     def __matmul__(self, other):
+        """Functional composition"""
         return Function(Compose(self._f, other))
 
     def __rmatmul__(self, other):
+        """Functional composition"""
         return Function(Compose(other, self._f))
 
     def left(self, *args, **kwargs):
+        """Partially apply function to the left."""
         if not args and not kwargs:
             return self
 
         return Function(PartialLeft(self._f, *args, **kwargs))
 
     def right(self, *args, **kwargs):
+        """Partially apply function to the right."""
         if not args and not kwargs:
             return self
 
         return Function(PartialRight(self._f, *args, **kwargs))
 
     def with_inverse(self, inv):
+        """
+        Create function with an inverse.
+
+        It should hold that:
+        - g = f @ f.inverse
+        - g(x) == x
+        """
         return InvertibleFunction(self._f, inv)
 
     @property
     def flip(self):
+        """Swap first and second argument."""
         return Function(self._flip)
 
     @property
     def rotate(self):
+        """Rotate first argument as last."""
         return Function(self._rotate)
 
     @property
     def pack(self):
+        """Make function that operates on multiple arguments work on a list."""
         return Function(self._pack)
 
     @property
     def unpack(self):
+        """Make function that operates on a list work on multiple arguments."""
         return Function(self._unpack)
 
     def _flip(self, *args, **kwargs):
@@ -93,6 +108,13 @@ class InvertibleFunction(Function):
 
     @property
     def inverse(self):
+        """
+        Return the inverse function.
+
+        It should hold that:
+        - g = f @ f.inverse
+        - g(x) == x
+        """
         inv = self._inverse
         if not isinstance(inv, InvertibleFunction):
             inv = InvertibleFunction(inv, self)
