@@ -123,8 +123,8 @@ operation_symbols = {
     'in': in_fn,
     '.': getattr_fn,
     '[]': getitem_fn,
-    # Experimental
     ':=': getitem_fn.right(-1).unpack,
+    # String-manipulation (experimental)
     's': Function(str.format).rotate,
     's+': concat_fn,
     's*': str_mul_fn,

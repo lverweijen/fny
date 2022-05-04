@@ -1,64 +1,53 @@
-Functional library for python
+Python is a quite capable of writing code functionally and 
+[many libraries](https://github.com/sfermigier/awesome-functional-python) 
+have been written to reimplement many of the functional tools.
+The only obstacle left is python's ugly lambda-syntax.
+This library remedies this by letting one construct python functions out of thin air.
 
 ### Examples
 
+Create functions either using the `fn`-factory or by manipulating the `it`-function:
 ```python
-from fny import fn, it, Pipe, OptionalPipe
-```
+from fny import fn, it
 
-Different ways to create functions:
-```python
 inc2 = it + 2
 inc3 = fn('+', 3)
-inc5 = inc2 @ inc3
-inc5(3)  # => 8
+inc2(3)  # => 5
+inc3(3)  # => 6
 ```
 
-Or by taking the inverse:
-```
-dec5 = inc5.inverse
-dec5(8)  # => 3
-```
-
-Multiple arguments:
-```
-add_fn2 = fn(0) + fn(1) + fn(2)
-add_fn2(1, 2, 3)  # => 6
+In some cases the inverse can be constructed automatically:
+```python
+dec3 = inc3.inverse
+dec3(8)  # => 5
 ```
 
-Combine left or right partials with composition (use `@` for this) to create more powerful functions.
+Functions with multiple arguments can be constructed as well:
+```python
+add_subtract = fn(0) + fn(1) - fn(2)
+add_subtract(5, 7, 3)  # => 9
+```
+
+Combine partially applied functions (`left` or `right`) with composition (`@` is used):
 
 ```python
 dotproduct = sum @ fn(map).left(fn('*'))
 dotproduct([1, 2, 3], [3, 2, 1])  # => 10
 ```
 
-Pipe values through different functions:
+A `Pipe`-class makes it easy to pass values around:
 
 ```python
+from fny import Pipe
+
 fac5 = (Pipe(5)
-        .into_head('+', 1)
-        .into_last(range, 1)
-        .into_head('f/', fn('*'), 1)
+        .into_head('+', 1)           # ^^ + 1
+        .into_last(range, 1)         # range(1, ^^)
+        .into_last(reduce, fn('*'))  # reduce(fn('*'), ^^)
         .value)  # => 120
 ```
 
-Shortcuts (experimental):
+### See also
 
-- `s/` and `s*` for `str.split` and `str.join`
-- `f/` and `f*` for `reduce` and `map`
-
-```python
-s = (Pipe('foe;bar;buz')
-     .into_head('s/', ';')
-     .into_head('f*', fn('.title') + '!')
-     .into_head('s*', ' ')
-     .value)  # => 'Foe! Bar! Buz!'
-```
-
-
-### Related
-
-- [itertools](https://docs.python.org/3/library/itertools.html) - Combine with this library to manipulate sequences.
-- [fn.py](https://github.com/kachayev/fn.py) - Package with similar ideas but taking a different approach.
-- [functional-python](https://pypi.org/project/functional-python/) - Functional datatypes for python.
+This library aims just for function creation.
+To manipulate sequences, it can be combined with [itertools](https://docs.python.org/3/library/itertools.html).
