@@ -1,9 +1,9 @@
-from fny.fn import fn
+from fny.factories import fn, lfn
 from fny.functions import Function
 from fny.monkeypatching import monkeypatch_ops
 from fny.pipe import Pipe, OptionalPipe
 
-__all__ = ['fn', 'it', 'Pipe', 'OptionalPipe']
+__all__ = ['fn', 'lfn', 'it', 'Pipe', 'OptionalPipe']
 
 it = fn()
 monkeypatch_ops(Function)

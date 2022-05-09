@@ -1,4 +1,4 @@
-from fny import fn
+from fny.utils import as_callable
 
 
 class Pipe:
@@ -29,9 +29,7 @@ class Pipe:
         return self
 
     def _call(self, f, *args, **kwargs):
-        if not callable(f):
-            f = fn(f)
-
+        f = as_callable(f)
         return f(*args, **kwargs)
 
 

@@ -1,3 +1,6 @@
+import operator
+from functools import partial
+
 from fny.formatting import repr_call
 
 
@@ -49,6 +52,16 @@ class Function:
         return InvertibleFunction(self._f, inv)
 
     @property
+    def attr(self):
+        """Compose function with attr access."""
+        return ComposedAttr(self)
+
+    @property
+    def mtd(self):
+        """Compose function with methodcall."""
+        return ComposedMethod(self)
+
+    @property
     def flip(self):
         """Swap first and second argument."""
         return Function(self._flip)
@@ -79,6 +92,26 @@ class Function:
 
     def _unpack(self, *args):
         return self._f(args)
+
+
+class ComposedAttr:
+    __slots__ = '_fn'
+
+    def __init__(self, f):
+        self._fn = f
+
+    def __getattr__(self, item):
+        return operator.itemgetter(item) @ self._fn
+
+
+class ComposedMethod:
+    __slots__ = '_fn'
+
+    def __init__(self, f):
+        self._fn = f
+
+    def __getattr__(self, method):
+        return partial(operator.methodcaller, method) @ self._fn
 
 
 class InvertibleFunction(Function):
@@ -134,7 +167,10 @@ class IdentityFunction(InvertibleFunction):
         return f"{self.__class__.__name__}()"
 
     def __matmul__(self, other):
-        return other
+        if isinstance(other, Function):
+            return other
+        else:
+            return Function(other)
 
     __rmatmul__ = __matmul__
 
@@ -147,8 +183,10 @@ class Compose:
         for f in funcs:
             if isinstance(f, Compose):
                 self._funcs.extend(f._funcs)
-            else:
+            elif callable(f):
                 self._funcs.append(f)
+            else:
+                raise TypeError(f"Argument {f} should be callable.")
 
     def __repr__(self):
         return repr_call(self.__class__, *self._funcs)
@@ -196,7 +234,7 @@ class PartialLeft:
         return self._f(*self._args, *args, **self._kwargs, **kwargs)
 
     def __repr__(self):
-        return repr_call(self.__class__)(self._f, *self._args, **self._kwargs)
+        return repr_call(self.__class__, self._f, *self._args, **self._kwargs)
 
 
 class PartialRight:

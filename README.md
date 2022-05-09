@@ -8,7 +8,7 @@ This library remedies this by letting one construct python functions out of thin
 
 Create functions either using the `fn`-factory or by manipulating the `it`-function:
 ```python
-from fny import fn, it
+from fny import fn, lfn, it
 
 inc2 = it + 2
 inc3 = fn('+', 3)
@@ -28,10 +28,10 @@ add_subtract = fn(0) + fn(1) - fn(2)
 add_subtract(5, 7, 3)  # => 9
 ```
 
-Combine partially applied functions (`left` or `right`) with composition (`@` is used):
+Combine partially applied functions (`lfn`) with composition (`@` is used):
 
 ```python
-dotproduct = sum @ fn(map).left(fn('*'))
+dotproduct = sum @ lfn(map, fn('*'))
 dotproduct([1, 2, 3], [3, 2, 1])  # => 10
 ```
 
