@@ -47,6 +47,25 @@ fac5 = (Pipe(5)
         .value)  # => 120
 ```
 
+### How to
+
+| Name | How |
+|---|---|
+| Identity function | `it` |
+| Unary operations | `-it`, `~it` |
+| Binary operations | `it + 1`, `fn('+', 1)` |
+| Attribute access | `fn('.', "x")`, `it.attr.x` |
+| Method call | `fn(".upper")`, `it.mtd.upper()` |
+| Composing functions | `fn(abs) @ fn(sum)` |
+| Partially apply on the right | `fn(pow, 2)`, `fn(pow).right(2)` |
+| Partial apply on the left | `lfn(pow, 2)`, `fn(pow).left(2)` |
+| Juxtaposition | `fn((math.cos, math.sin))` |
+| Constant function | `fn(':=', 42)` |
+| Return `n`th argument | `fn(n)` |
+| Container lookup | `fn({'a': 1, 'b': 2, 'c': 3})` |
+| Test membership | `fn(set('aeiouy'))` |
+| Flip first and second argument | `fn(divmod).flip` |
+
 ### See also
 
 This library aims just for function creation.
