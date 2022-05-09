@@ -1,6 +1,4 @@
-import functools
 import operator as op
-from itertools import filterfalse
 
 from fny.functions import Function, InvertibleFunction, IdentityFunction
 
@@ -54,13 +52,8 @@ def _str_mul(text, n):
         return text * n
 
 
-def _map_inverse(iterable, f):
-    return map(f.inverse, iterable)
-
-
 str_mul_fn = InvertibleFunction(_str_mul, str.split)
 str_div_fn = str_mul_fn.inverse
-map_fn = Function(map).rotate.with_inverse(_map_inverse)
 
 mono_operations = {
     '__pos__': identity_fn,
@@ -125,15 +118,10 @@ operation_symbols = {
     '[]': getitem_fn,
     ':=': getitem_fn.right(-1).unpack,
     # String-manipulation (experimental)
-    's': Function(str.format).rotate,
+    's': Function(str.format),
     's+': concat_fn,
     's*': str_mul_fn,
     's/': str_div_fn,
     's//': Function(str.count),
     's%': Function(str.replace).right('', -1),
-    # Bird Meertens-formalism (experimental)
-    'f/': Function(functools.reduce).flip,
-    'f*': map_fn,
-    'f<': Function(filter).flip,
-    'f>': Function(filterfalse).flip,
 }
