@@ -116,7 +116,7 @@ operation_symbols = {
     'in': in_fn,
     '.': getattr_fn,
     '[]': getitem_fn,
-    ':=': getitem_fn.right(-1).unpack,
+    ':=': getitem_fn.right(-1).pack,
     # String-manipulation (experimental)
     's': Function(str.format),
     's+': concat_fn,

@@ -1,5 +1,4 @@
 import operator
-from functools import partial
 
 from fny.formatting import repr_call
 
@@ -63,7 +62,12 @@ class Function:
 
     @property
     def flip(self):
-        """Swap first and second argument."""
+        """
+        Swap first and second argument.
+
+        >>> Function(pow).flip(5, 2)
+        32
+        """
         return Function(self._flip)
 
     @property
@@ -72,14 +76,27 @@ class Function:
         return Function(self._rotate)
 
     @property
-    def pack(self):
-        """Make function that operates on multiple arguments work on a list."""
-        return Function(self._pack)
+    def apply(self):
+        """
+        Turn function that accepts multiple arguments into a function that accepts a list.
+
+        The opposite of pack()
+
+        >>> Function(pow).apply([2, 5])
+        32
+        """
+        return Function(self._apply)
 
     @property
-    def unpack(self):
-        """Make function that operates on a list work on multiple arguments."""
-        return Function(self._unpack)
+    def pack(self):
+        """
+        Turn function that accepts a list into a function that accepts multiple arguments.
+
+        The opposite of apply()
+        >>> Function(list).pack(1, 2, 3)
+        [1, 2, 3]
+        """
+        return Function(self._pack)
 
     def _flip(self, *args, **kwargs):
         return self._f(args[1], args[0], *args[2:], **kwargs)
@@ -87,10 +104,10 @@ class Function:
     def _rotate(self, *args, **kwargs):
         return self._f(args[-1], *args[:-1], **kwargs)
 
-    def _pack(self, arg):
+    def _apply(self, arg):
         return self._f(*arg)
 
-    def _unpack(self, *args):
+    def _pack(self, *args):
         return self._f(args)
 
 
@@ -101,17 +118,21 @@ class ComposedAttr:
         self._fn = f
 
     def __getattr__(self, item):
-        return operator.itemgetter(item) @ self._fn
+        return operator.attrgetter(item) @ self._fn
 
 
 class ComposedMethod:
     __slots__ = '_fn'
 
+    @staticmethod
+    def methodcaller(method, *args, **kwargs):
+        return Function(operator.methodcaller(method, *args, **kwargs))
+
     def __init__(self, f):
         self._fn = f
 
     def __getattr__(self, method):
-        return partial(operator.methodcaller, method) @ self._fn
+        return PartialRight(self.methodcaller, method) @ self._fn
 
 
 class InvertibleFunction(Function):

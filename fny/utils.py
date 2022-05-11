@@ -34,7 +34,7 @@ def as_callable(f):
     elif isinstance(f, Container):
         return getitem_fn.left(f)
     elif isinstance(f, int):
-        return getitem_fn.right(f).unpack
+        return getitem_fn.right(f).pack
     elif isinstance(f, slice):
         return getitem_fn.right(f)
     else:
