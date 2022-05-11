@@ -47,7 +47,7 @@ fac5 = (Pipe(5)
         .value)  # => 120
 ```
 
-### How to
+### Overview
 
 | Name | How |
 |---|---|
@@ -65,6 +65,8 @@ fac5 = (Pipe(5)
 | Container lookup | `fn({'a': 1, 'b': 2, 'c': 3})` |
 | Test membership | `fn(set('aeiouy'))` |
 | Flip first and second argument | `fn(divmod).flip` |
+| Apply function to tuple | `fn(pow).apply((2, 5))` |
+| Treat arguments as list | `fn(sum).pack(1, 2, 3, 4, 5)` |
 
 ### See also
 
