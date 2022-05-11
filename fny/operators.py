@@ -43,18 +43,6 @@ identity_fn = IdentityFunction()
 getattr_fn = Function(getattr)
 getitem_fn = Function(op.getitem)
 
-
-def _str_mul(text, n):
-    """Join or repeat text depending on context."""
-    if isinstance(n, str):
-        return n.join(text)
-    else:
-        return text * n
-
-
-str_mul_fn = InvertibleFunction(_str_mul, str.split)
-str_div_fn = str_mul_fn.inverse
-
 mono_operations = {
     '__pos__': identity_fn,
     '__neg__': neg_fn,
@@ -117,11 +105,4 @@ operation_symbols = {
     '.': getattr_fn,
     '[]': getitem_fn,
     ':=': getitem_fn.right(-1).pack,
-    # String-manipulation (experimental)
-    's': Function(str.format),
-    's+': concat_fn,
-    's*': str_mul_fn,
-    's/': str_div_fn,
-    's//': Function(str.count),
-    's%': Function(str.replace).right('', -1),
 }
